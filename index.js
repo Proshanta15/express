@@ -1,32 +1,39 @@
 import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
 
 const app = express();
 
-// create __dirname
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
+// function ageCheck(req, res, next) {
+//   if (!req.query.age || req.query.age < 18) {
+//     // Check if age is provided and is at least 18
+//     return res.send("You must be at least 18 years old to access this page.");
+//   } else {
+//     next();
+//   }
+// }
+// app.use(ageCheck);
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+//ip address
+function ipCheck(req, res, next) {
+  const ip = req.socket.remoteAddress;
+  console.log(ip);
+  if (ip.includes("192.168.0.185")) {
+    return res.send("Access denied: Localhost IP address is not allowed.");
+  } else {
+    next();
+  }
+}
+app.use(ipCheck);
 
 app.get("/", (req, res) => {
-  const filePath = path.join(__dirname, "views", "home.html");
-  res.sendFile(filePath);
+  res.send("Hello World");
 });
 
-app.get("/about", (req, res) => {
-  const filePath = path.join(__dirname, "views", "about.html");
-  res.sendFile(filePath);
+app.get("/login", (req, res) => {
+  res.send("Login Page");
 });
 
-// app.use((req, res) => {
-//   const filePath = path.join(__dirname, "views", "404.html");
-//   res.status(404).sendFile(filePath);
-// });
-app.use((req, res) => {
-  const filePath = path.join(__dirname, "views", "404.html");
-  res.status(404).sendFile(filePath);
+app.get("/admin", (req, res) => {
+  res.send("Admin Page");
 });
+
 app.listen(3000);
