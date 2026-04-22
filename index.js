@@ -1,19 +1,26 @@
-import express from "express";
-import morgan from "morgan";
+import express from 'express';
 
 const app = express();
-app.use(morgan("dev"));
 
-// Create directory and file
+app.set('view engine', 'ejs');
+app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => {
-  res.send("Hello World");
+app.get('/add-user', (req, res) => {
+  res.render('addUser');
 });
 
-app.get("/wait", (req, res) => {
-  setTimeout(() => {
-    res.send("Waited for 1 second");
-  }, 1000);
+app.post('/submit-user', (req, res) => {
+  const { name, email } = req.body;
+  res.render('submitUser', { name, email });
+});
+
+app.get('/users', (req, res) => {
+  const users= [
+    { name:'Proshanta', age:25 },
+    { name:'Rahim', age:17 },
+    { name:'Karim', age:30 }
+  ];
+  res.render('users', { users });
 });
 
 app.listen(3000);
