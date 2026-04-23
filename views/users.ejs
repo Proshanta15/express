@@ -7,20 +7,11 @@
 </head>
 <body>
     <h1>All Users</h1>
-
+    
     <ul>
-        <% for(let i = 0; i <users.length; i++) {%>
-            <li>
-                Name: <%= users[i].name %> | Age: <%= users[i].age %>
-                
-                <% if (users[i].age >= 18) {%>
-                    <span style="color: green;">(Adult)</span>
-                <%}else {%>
-                    <span style="color: red;">(Not Adult)</span>
-                <%} %>
-            </li>
+        <% for(let i = 0; i<users.length; i++)  {%>
+            <li><%= users[i] %></li>
         <% }%>
-        
     </ul>
 </body>
 </html>

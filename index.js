@@ -2,25 +2,23 @@ import express from 'express';
 
 const app = express();
 
-app.set('view engine', 'ejs');
-app.use(express.urlencoded({ extended: true }));
-
-app.get('/add-user', (req, res) => {
-  res.render('addUser');
+app.get('/', (req, res) => {
+  const users = ['Alice', 'Bob', 'Charlie'];
+  let data = `<ul>`;
+  for(let i = 0; i<users.length; i++){
+    console.log(users[i]);
+    data += `<li><a href="/user/${users[i]}">${users[i]} </a></li>`;
+  }
+  data += `</ul>`;
+  res.send(data);
 });
 
-app.post('/submit-user', (req, res) => {
-  const { name, email } = req.body;
-  res.render('submitUser', { name, email });
-});
+app.get('/user/:name', (req, res) =>{
+  console.log(req.params.name);
+  
+  res.send(`User: ${req.params.name}  <br> <a href="/">Back to Home</a>`);
+})
 
-app.get('/users', (req, res) => {
-  const users= [
-    { name:'Proshanta', age:25 },
-    { name:'Rahim', age:17 },
-    { name:'Karim', age:30 }
-  ];
-  res.render('users', { users });
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
 });
-
-app.listen(3000);
