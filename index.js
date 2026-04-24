@@ -1,24 +1,21 @@
-import express from 'express';
+import express from "express";
+import { MongoClient } from "mongodb";
+
+const url = "mongodb://127.0.0.1:27017";
+const dbName = "school";
+const client = new MongoClient(url);
+
+async function dbConnection() {
+  await client.connect();
+  const db = client.db(dbName);
+  const collection = db.collection("students");
+
+  const result = await collection.find().toArray();
+  console.log(result);
+}
+
+dbConnection();
 
 const app = express();
 
-app.get('/', (req, res) => {
-  const users = ['Alice', 'Bob', 'Charlie'];
-  let data = `<ul>`;
-  for(let i = 0; i<users.length; i++){
-    console.log(users[i]);
-    data += `<li><a href="/user/${users[i]}">${users[i]} </a></li>`;
-  }
-  data += `</ul>`;
-  res.send(data);
-});
-
-app.get('/user/:name', (req, res) =>{
-  console.log(req.params.name);
-  
-  res.send(`User: ${req.params.name}  <br> <a href="/">Back to Home</a>`);
-})
-
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
-});
+app.listen(3000);
