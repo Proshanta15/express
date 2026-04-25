@@ -1,20 +1,96 @@
 import express from "express";
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 
 const url = "mongodb://127.0.0.1:27017";
 const dbName = "school";
 const client = new MongoClient(url);
 
 const app = express();
+app.set("view engine", "ejs");
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-app.get("/", async (req, res) => {
-  await client.connect();
-  const db = client.db(dbName);
-  const collection = db.collection("students");
+client
+  .connect()
+  .then((connection) => {
+    const db = connection.db(dbName);
 
-  const result = await collection.find().toArray();
-  console.log(result);
-  res.send("hello");
-});
+    app.get("/api", async (req, res) => {
+      const collection = db.collection("students");
+      const students = await collection.find().toArray();
+      res.send(students);
+    });
+
+    app.get("/show-students", async (req, res) => {
+      const collection = db.collection("students");
+      const result = await collection.find().toArray();
+      console.log(result);
+      res.render("students", { students: result });
+    });
+
+    app.get("/add", (req, res) => {
+      res.render("add-student");
+    });
+
+    app.post("/add-student", async (req, res) => {
+      const collection = db.collection("students");
+      const result = await collection.insertOne(req.body);
+      console.log(result);
+      res.send(
+        `<h1>Student added successfully</h1><a href="/show-students">Show Students</a>`,
+      );
+    });
+
+    app.post("/add-student-api", async (req, res) => {
+      console.log(req.body);
+      if (!req.body.name || !req.body.age || !req.body.email) {
+        return res.status(400).send("All fields are required");
+      }
+      const collection = db.collection("students");
+      const result = await collection.insertOne(req.body);
+      console.log(result);
+
+      res.send("Student added successfully via API");
+    });
+
+    app.delete("/delete/:id", async (req, res) => {
+      const collection = db.collection("students");
+      const result = await collection.deleteOne({
+        _id: new ObjectId(req.params.id),
+      });
+      if (result) {
+        res.send({
+          message: "Student deleted successfully",
+          success: true,
+        });
+      } else {
+        res.send({
+          message: "Student not found",
+          success: false,
+        });
+      }
+    });
+
+    app.get("/show-students/delete/:id", async (req, res) => {
+      const collection = db.collection("students");
+      const result = await collection.deleteOne({
+        _id: new ObjectId(req.params.id),
+      });
+      if (result) {
+        res.send(
+          `<h1>Student deleted successfully</h1><a href="/show-students">Show Students</a>`,
+        );
+      } else {
+        res.send(
+          `<h1>Student not found</h1><a href="/show-students">Show Students</a>`,
+        );
+      }
+    });
+
+    console.log("Connected successfully to MongoDB");
+  })
+  .catch((err) => {
+    console.error("Failed to connect to MongoDB", err);
+  });
 
 app.listen(3000);
