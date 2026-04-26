@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Student</title>
+  </head>
+  <body>
+    <h1>Edit Student</h1>
+    <form action="/edit-student/<%= student._id %>" method="post">
+      <input
+        type="text"
+        name="name"
+        value="<%= student.name %>"
+        placeholder="Name"
+      />
+      <br />
+      <br />
+      <input
+        type="text"
+        name="email"
+        value="<%= student.email %>"
+        placeholder="Email"
+      />
+      <br />
+      <br />
+      <input
+        type="text"
+        name="age"
+        value="<%= student.age %>"
+        placeholder="Age"
+      />
+      <br />
+      <br />
+      <button type="submit">Update Student</button>
+      <a href="/show-students">Show all Students</a>
+    </form>
+  </body>
+</html>

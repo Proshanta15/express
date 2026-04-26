@@ -87,6 +87,60 @@ client
       }
     });
 
+    app.get("/show-students/edit/:id", async (req, res) => {
+      console.log(req.params.id);
+      const collection = db.collection("students");
+      const result = await collection.findOne({
+        _id: new ObjectId(req.params.id),
+      });
+      console.log(result);
+      res.render("edit-student", { student: result });
+    });
+
+    app.get("/api/edit-student/:id", async (req, res) => {
+      const collection = db.collection("students");
+      const result = await collection.findOne({
+        _id: new ObjectId(req.params.id),
+      });
+      res.send({
+        message: "Student found",
+        success: true,
+        student: result,
+      });
+    });
+
+    app.post("/edit-student/:id", async (req, res) => {
+      const collection = db.collection("students");
+      const result = await collection.updateOne(
+        { _id: new ObjectId(req.params.id) },
+        { $set: req.body },
+      );
+      if (result) {
+        res.send("Student updated successfully");
+      } else {
+        res.status(404).send("Student not found");
+      }
+    });
+
+    app.put("/api/edit-student/:id", async (req, res) => {
+      const collection = db.collection("students");
+      const result = await collection.updateOne(
+        { _id: new ObjectId(req.params.id) },
+        { $set: req.body },
+      );
+      if (result) {
+        res.send({
+          message: "Student updated successfully",
+          success: true,
+        });
+      } else {
+        res.status(404).send({
+          message: "Student not found",
+          success: false,
+        });
+      }
+    });
+
     console.log("Connected successfully to MongoDB");
   })
   .catch((err) => {

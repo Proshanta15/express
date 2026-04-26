@@ -20,7 +20,9 @@
         <td><%= student.age %></td>
         <td><%= student.email %></td>
         <td>
-          <a href="/show-students/delete/<%= student._id %>">Delete</a>
+          <a href="/show-students/delete/<%= student._id %>">Delete</a> 
+          <span style="margin: 0px 10px;"> | </span>
+          <a href="/show-students/edit/<%= student._id %>">Edit</a>
         </td>
       </tr>
       <% })%>
