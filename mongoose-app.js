@@ -1,16 +1,22 @@
+import express from "express";
 import mongoose from "mongoose";
+import studentModel from "./model/studentModel.js";
+const app = express();
 
-async function dbConnection() {
-    await mongoose.connect("mongodb://127.0.0.1:27017/school");
-    const schema = new mongoose.Schema({
-        name: String,
-        email: String,
-        age: Number
-    });
+await mongoose
+  .connect("mongodb://127.0.0.1:27017/school")
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((err) => {
+    console.error("Error connecting to MongoDB", err);
+  });
 
-    const studentModel = mongoose.model("Students", schema);
-    const result = await studentModel.find();
-    console.log(result);
-}
+app.get("/", async (req, res) => {
+  const studentData = await studentModel.find();
+  res.send(studentData);
+});
 
-dbConnection();
+app.listen(3000, () => {
+  console.log("Server is running on port 3000");
+});
